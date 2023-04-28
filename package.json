@@ -4,9 +4,14 @@
   "description": "Otobüs seferleri için restful api",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "nodemon":"nodemon  index.js",
+    "start":"node index.js"
   },
   "type": "module",
   "author": "",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
 }
