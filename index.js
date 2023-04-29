@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import bodyParser from "body-parser";
 import cors from "cors";
 import userRouter from "./src/routes/userRoutes.js"
+import { verifyToken } from "./src/middlewares/authMiddleware.js";
 dotenv.config();
 const { PORT, MONGO_URI } = process.env;
 const app = express();
@@ -25,3 +26,4 @@ mongoose
   });
 
   app.use("/",userRouter)
+  app.use(verifyToken);
