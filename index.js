@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 import bodyParser from "body-parser";
 import cors from "cors";
-
+import userRouter from "./src/routes/userRoutes.js"
 dotenv.config();
 const { PORT, MONGO_URI } = process.env;
 const app = express();
@@ -23,3 +23,5 @@ mongoose
   .catch((err) => {
     console.log(err);
   });
+
+  app.use("/",userRouter)

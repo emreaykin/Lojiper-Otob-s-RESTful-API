@@ -25,9 +25,9 @@ const userSchema = new mongoose.Schema({
         type:String,
         required:true
     },
-    login:{
-        type:Boolean,
-        default:false
+    token:{
+        type:String,
+        default:""
     },
     tickets:[{
         time:{
@@ -46,8 +46,7 @@ const userSchema = new mongoose.Schema({
             type:String,
             required:true
         }
-    }],
-    default: []
+    }]
 });
 
 
