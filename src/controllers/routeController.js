@@ -1,3 +1,4 @@
+import busModel from "../models/busModel.js";
 import routeModel from "../models/routeModel.js";
 
 export const createRoute = async (req, res) => {
@@ -25,4 +26,17 @@ export const getRouteList = async (req, res) => {
   
     res.status(200).json({ message: "Rotalar", routes });
   };
+
+  export const getRouteDetail = async (req,res)=>{
+    const {route_name,route_bus} = req.body;
+
+    const exist = await routeModel.findOne({route_name:route_name,route_bus:route_bus});
+    if(!exist){
+        return res.status(500).json({ message: "Rota bulunamadi" });
+    }
+    const busDetail = await busModel.findOne({bus_plate:route_bus});
+
+    return res.status(200).json({ message: "Sefer Detayları",busDetail });
+
+  }
   
