@@ -9,7 +9,7 @@ const busSchema = new mongoose.Schema({
         type:Number,
         required:true
     },
-    bus_empty_seats:{
+    bus_full_seats:{
         type:[Number],
         required:true,
         default:[]

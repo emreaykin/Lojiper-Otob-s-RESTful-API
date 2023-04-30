@@ -49,19 +49,29 @@ export const loginUser = async (req, res) => {
       });
       user.token = token;
       await user.save();
-      return  res.status(200).json({ message: "Giriş başarılı", token:token});
-
+      return res.status(200).json({ message: "Giriş başarılı", token: token });
     }
     return res.status(500).json({ message: "Şifre Yanlış." });
   } catch (error) {
-    console.log(error)
+    console.log(error);
     return res.status(500).json({ message: error });
   }
 };
 
+export const userTickets = async (req, res) => {
+  const decoded = req.user;
+  const user = await userModel.findOne({ mail: decoded.mail });
+  if (!user) {
+    return res.status(404).json({ message: "Kullanıcı bulunamadı" });
+  }
+  return res
+    .status(200)
+    .json({ message: "Kullanıcının biletleri: ", tickets: user.tickets });
+};
+
 export const test = async (req, res) => {
-  return  res.status(200).json({ message: "test1"});
+  return res.status(200).json({ message: "test1" });
 };
 export const testt = async (req, res) => {
-  return  res.status(200).json({ message: "test2"});
+  return res.status(200).json({ message: "test2" });
 };

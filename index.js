@@ -3,8 +3,9 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 import bodyParser from "body-parser";
 import cors from "cors";
-import userRouter from "./src/routes/userRoutes.js"
-import { verifyToken } from "./src/middlewares/authMiddleware.js";
+import userRouter from "./src/routes/userRoutes.js";
+import busRouter from "./src/routes/busRoutes.js";
+
 dotenv.config();
 const { PORT, MONGO_URI } = process.env;
 const app = express();
@@ -25,5 +26,5 @@ mongoose
     console.log(err);
   });
 
-  app.use("/",userRouter)
-  app.use(verifyToken);
+app.use("/", userRouter);
+app.use("/", busRouter);
