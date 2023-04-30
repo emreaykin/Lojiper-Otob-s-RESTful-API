@@ -14,7 +14,11 @@ const routeSchema = new mongoose.Schema({
  route_bus:{
     type:String,
     required:true
- }
+ },
+ price:{
+   type:Number,
+   required:true
+}
 })
 
 const routeModel = mongoose.model("routes",routeSchema);

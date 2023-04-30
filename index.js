@@ -5,6 +5,7 @@ import bodyParser from "body-parser";
 import cors from "cors";
 import userRouter from "./src/routes/userRoutes.js";
 import busRouter from "./src/routes/busRoutes.js";
+import routeRoutes from "./src/routes/routeRoutes.js";
 
 dotenv.config();
 const { PORT, MONGO_URI } = process.env;
@@ -28,3 +29,9 @@ mongoose
 
 app.use("/", userRouter);
 app.use("/", busRouter);
+app.use("/",routeRoutes)
+
+
+
+
+
