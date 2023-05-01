@@ -1,6 +1,7 @@
 import userModel from "../models/userModel.js";
 import bcrypt from "bcrypt";
 import JsonWebToken from "jsonwebtoken";
+
 export const registerUser = async (req, res) => {
   const { name, age, gender, mail, phone, password } = req.body;
   try {
@@ -9,8 +10,9 @@ export const registerUser = async (req, res) => {
     });
 
     if (exist) {
-      return res.status(200).json({ message: "Mail adresi kayıtlı" });
+      return res.status(400).json({ message: "Mail adresi kayıtlı" });
     }
+
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = await userModel.create({
       name: name,
@@ -22,13 +24,13 @@ export const registerUser = async (req, res) => {
       token: "",
       tickets: [],
     });
-    return res
-      .status(200)
-      .json({ message: "Kullanıcı başarıyla kaydedildi.", user });
+
+    return res.status(200).json({ message: "Kullanıcı başarıyla kaydedildi.", user });
   } catch (error) {
-    return res.status(500).json({ message: error });
+    return res.status(500).json({ message: error.message });
   }
 };
+
 export const loginUser = async (req, res) => {
   try {
     const { mail, password } = req.body;
@@ -37,41 +39,43 @@ export const loginUser = async (req, res) => {
     });
 
     if (!user) {
-      return res.status(500).json({ message: "Kullanıcı kayıtlı değil." });
+      return res.status(400).json({ message: "Kullanıcı kayıtlı değil." });
     }
 
     const passwordMatch = await bcrypt.compare(password, user.password);
-    console.log(passwordMatch);
+
     if (passwordMatch) {
       const payload = { mail, password };
       const token = JsonWebToken.sign(payload, password, {
-        expiresIn: 300,
+        expiresIn: "1h",
       });
+
       user.token = token;
       await user.save();
+
       return res.status(200).json({ message: "Giriş başarılı", token: token });
     }
-    return res.status(500).json({ message: "Şifre Yanlış." });
+
+    return res.status(400).json({ message: "Şifre Yanlış." });
   } catch (error) {
     console.log(error);
-    return res.status(500).json({ message: error });
+    return res.status(500).json({ message: error.message });
   }
 };
 
 export const userTickets = async (req, res) => {
   const decoded = req.user;
   const user = await userModel.findOne({ mail: decoded.mail });
+
   if (!user) {
     return res.status(404).json({ message: "Kullanıcı bulunamadı" });
   }
-  return res
-    .status(200)
-    .json({ message: "Kullanıcının biletleri: ", tickets: user.tickets });
+
+  return res.status(200).json({ message: "Kullanıcının biletleri: ", tickets: user.tickets });
 };
 
 export const test = async (req, res) => {
   return res.status(200).json({ message: "test1" });
 };
-export const testt = async (req, res) => {
-  return res.status(200).json({ message: "test2" });
-};
+
+

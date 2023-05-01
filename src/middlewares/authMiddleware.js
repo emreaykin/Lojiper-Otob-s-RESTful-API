@@ -4,7 +4,7 @@ export const verifyToken = async (req, res, next) => {
   const token = req.headers["auth"];
 
   if (!token) {
-    return res.status(401).json({ message: "Token bulunamadı" });
+    return res.status(401).json({ message: "Yetkilendirme başarısız. Token eksik." });
   }
 
   try {
@@ -16,6 +16,7 @@ export const verifyToken = async (req, res, next) => {
       next();
     }
   } catch (error) {
-    return res.status(500).json({ message: "Token doğrulanamadı.", error });
+    return res.status(401).json({ message: "Yetkilendirme başarısız. Token geçersiz." });
+
   }
 };
