@@ -59,3 +59,5 @@ export const getBus = async (req, res) => {
     return res.status(500).json({ message: "Araç getirilirken bir hata oluştu.", error });
   }
 };
+
+

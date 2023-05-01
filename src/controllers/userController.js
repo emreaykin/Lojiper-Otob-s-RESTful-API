@@ -1,7 +1,9 @@
 import userModel from "../models/userModel.js";
 import bcrypt from "bcrypt";
 import JsonWebToken from "jsonwebtoken";
-
+import {testAddBus} from "../test/testAddBus.js"
+import {testAddRoutes} from "../test/testAddRoutes.js"
+import {testAddUser} from "../test/testAddUser.js"
 export const registerUser = async (req, res) => {
   const { name, age, gender, mail, phone, password } = req.body;
   try {
@@ -74,8 +76,19 @@ export const userTickets = async (req, res) => {
   return res.status(200).json({ message: "Kullanıcının biletleri: ", tickets: user.tickets });
 };
 
-export const test = async (req, res) => {
-  return res.status(200).json({ message: "test1" });
+export const testData = async (req, res) => {
+ try {
+  const addBus = await testAddBus();
+  const addRoutes = await testAddRoutes();
+  const addUser = await testAddUser();
+
+  if(addBus && addRoutes && addUser){
+    return res.status(200).json({ message: "Test verileri eklendi" });
+  }
+  return res.status(404).json({ message: "Hata oluştu" });
+ } catch (error) {
+  
+ }
 };
 
 
