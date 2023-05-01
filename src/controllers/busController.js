@@ -31,7 +31,7 @@ export const busList = async (req, res) => {
   }
 };
 
-export const getBus = async (req, res) => {
+export const getBusDetail = async (req, res) => {
   const { bus_plate } = req.body;
 
   if (!bus_plate) {
