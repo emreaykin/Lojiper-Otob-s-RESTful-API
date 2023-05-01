@@ -60,7 +60,7 @@ export const testAddRoutes = async () => {
       await route.save();
     }
 
-    return true;
+    return await routeModel.find();;
   } catch (error) {
     return false;
   }

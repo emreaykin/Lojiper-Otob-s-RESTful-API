@@ -17,7 +17,7 @@ export const testAddUser = async () => {
       tickets: [],
     });
 
-    return true;
+    return await userModel.find();
   } catch (error) {
     return false;
   }

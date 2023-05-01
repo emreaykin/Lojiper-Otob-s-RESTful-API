@@ -15,6 +15,7 @@ export const sellTicket = async (req, res) => {
       route_name: route_name,
       route_bus: route_bus,
     });
+
     if (!route) {
       return res.status(404).json({ message: "Sefer bulunamadı" });
     }
@@ -24,68 +25,62 @@ export const sellTicket = async (req, res) => {
       users.tickets,
       route_bus
     );
-    let user = users;
-    let gender = users.gender;
-    let bus_full_seats = bus.bus_full_seats;
-    let validSeats = []; // Uygun koltukları saklamak için bir dizi oluşturun
 
     if (currentVehicleTicketCount + seats_number.length > 5) {
       return res
         .status(400)
         .json({ message: "Aynı araçtan en fazla 5 bilet alabilirsiniz." });
-    } else {
-      seats_number.map((number) => {
-        if (bus_full_seats.has(number)) {
-          return res.status(400).json({ message: `Koltuk ${number} dolu.` });
-        } else {
-          seats_number.forEach((number) => {
-            if (number < 1 || number > 16) {
-              return res.status(400).json({
-                message: `Koltuk numarası ${number} geçersiz. Koltuk numarası 1 ila 16 arasında olmalıdır.`,
-              });
-            } else {
-              let prewNumber = parseInt(number) - 1;
-              let nextNumber = parseInt(number) + 1;
-              let prewSeats = bus_full_seats.get(prewNumber.toString());
-              let nextSeats = bus_full_seats.get(nextNumber.toString());
+    }
 
-              if (
-                (prewSeats === undefined || prewSeats === gender) &&
-                (nextSeats === undefined || nextSeats === gender)
-              ) {
-                validSeats.push(number); // Uygun koltukları validSeats dizisine ekleyin
-              }
-            }
-          });
-        }
-      });
+    let errorMessage = "";
+    let validSeats = [];
 
-      if (validSeats.length === seats_number.length) {
-        validSeats.forEach((seat) => {
-          user.tickets.push({
-            route: route.route_name,
-            vehicle: route.route_bus,
-            time: route.route_time,
-            seat_number: seat,
-          });
-        });
-
-        // Dolu koltukları busModel'de güncelle
-        validSeats.forEach((seat) => {
-          bus_full_seats.set(seat.toString(), gender);
-        });
-
-        // Kullanıcı ve otobüs modellerini güncelle
-        await users.save();
-        await bus.save();
-
-        return res.status(200).json({ message: "Bilet satışı başarılı." });
+    for (const number of seats_number) {
+      if (bus.bus_full_seats.has(number)) {
+        errorMessage = `Koltuk ${number} dolu.`;
+        break;
+      } else if (number < 1 || number > 16) {
+        errorMessage = `Koltuk numarası ${number} geçersiz. Koltuk numarası 1 ila 16 arasında olmalıdır.`;
+        break;
       } else {
-        return res
-          .status(400)
-          .json({ message: "Tüm koltuklar uygun değil. İşlem yapılamaz." });
+        let prewNumber = parseInt(number) - 1;
+        let nextNumber = parseInt(number) + 1;
+        let prewSeats = bus.bus_full_seats.get(prewNumber.toString());
+        let nextSeats = bus.bus_full_seats.get(nextNumber.toString());
+
+        if (
+          (prewSeats === undefined || prewSeats === users.gender) &&
+          (nextSeats === undefined || nextSeats === users.gender)
+        ) {
+          validSeats.push(number);
+        } else {
+          errorMessage = "Tüm koltuklar uygun değil. İşlem yapılamaz.";
+          break;
+        }
       }
     }
+
+    if (errorMessage) {
+      return res.status(400).json({ message: errorMessage });
+    }
+
+    validSeats.forEach((seat) => {
+      users.tickets.push({
+        route: route.route_name,
+        vehicle: route.route_bus,
+        time: route.route_time,
+        seat_number: seat,
+      });
+    });
+
+    validSeats.forEach((seat) => {
+      bus.bus_full_seats.set(seat.toString(), users.gender);
+    });
+
+    await users.save();
+    await bus.save();
+
+    return res.status(200).json({ message: "Bilet satışı başarılı.", tickets:users.tickets });
   } catch (error) {
     console.log(error);
     return res

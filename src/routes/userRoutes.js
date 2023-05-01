@@ -4,7 +4,7 @@ const userRouter = express.Router();
 import { registerUser, loginUser ,testData,userTickets} from "../controllers/userController.js";
 userRouter.post("/login", loginUser);
 userRouter.post("/register", registerUser);
-userRouter.get("/test", testData);
+userRouter.get("/test",verifyToken, testData);
 userRouter.get("/userTickets",verifyToken, userTickets);
 
 

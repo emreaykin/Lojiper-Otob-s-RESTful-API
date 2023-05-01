@@ -67,7 +67,7 @@ export const testAddBus = async () => {
       await bus.save();
     }
 
-    return true;
+    return await busModel.find();
   } catch (error) {
     return false;
   }

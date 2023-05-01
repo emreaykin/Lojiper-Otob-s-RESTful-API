@@ -82,8 +82,8 @@ export const testData = async (req, res) => {
   const addRoutes = await testAddRoutes();
   const addUser = await testAddUser();
 
-  if(addBus && addRoutes && addUser){
-    return res.status(200).json({ message: "Test verileri eklendi" });
+  if(addBus !=false && addRoutes !=false && addUser !=false){
+    return res.status(200).json({ message: "Test verileri eklendi",buses:addBus,routes:addRoutes,users:addUser });
   }
   return res.status(404).json({ message: "Hata oluştu" });
  } catch (error) {
